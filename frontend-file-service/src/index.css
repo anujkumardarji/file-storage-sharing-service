@@ -1,0 +1,39 @@
+/* Import Tailwind CSS base styles */
+@import 'tailwindcss/base';
+
+/* Import Tailwind CSS component styles */
+@import 'tailwindcss/components';
+
+/* Import Tailwind CSS utility styles */
+@import 'tailwindcss/utilities';
+
+/* Custom styles can be added below */
+
+/* Example custom styles */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f7fafc; /* Set a background color using a Tailwind color token */
+  color: #1a202c; /* Set text color using a Tailwind color token */
+}
+
+.container {
+  max-width: 960px; /* Responsive container width */
+  margin: 0 auto; /* Center align the container */
+  padding: 20px; /* Add padding to the container */
+}
+
+/* Responsive classes */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px; /* Adjust padding for smaller screens */
+  }
+}
+
+/* Example Tailwind utility classes */
+.btn {
+  @apply bg-blue-500 text-white font-bold py-2 px-4 rounded; /* Apply Tailwind classes using @apply */
+}
+
+.btn:hover {
+  @apply bg-blue-700; /* Hover state */
+}
