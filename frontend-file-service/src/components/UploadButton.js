@@ -15,7 +15,7 @@ const UploadButton = ({ onFileSelect }) => {
         <p className="text-white text-lg font-semibold mb-4">Upload your files here</p>
         <label
           htmlFor="fileInput"
-          className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded inline-block"
+          className="cursor-pointer bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded inline-block"
         >
           Upload File
           <input
