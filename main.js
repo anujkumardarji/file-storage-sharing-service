@@ -63,7 +63,7 @@ app.post("/file-upload",upload.single('file'),async (req,res)=>{
       await s3.upload(params).promise();
       const file = new FileModel({ key: params.Key });
       await file.save();
-      res.send(`File uploaded successfully.`);
+      res.send({ success : true, message : `File uploaded successfully.`, key : params.Key});
     } catch (error) {
       console.error(error);
       res.status(500).send('Failed to upload file to S3.');
