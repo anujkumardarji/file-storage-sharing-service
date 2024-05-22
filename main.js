@@ -3,8 +3,15 @@ const bodyParser = require('body-parser')
 const AWS = require("aws-sdk")
 const path = require('path');
 require('dotenv').config();
-// Storage 
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+
+// File helper middleware 
 const multer = require('multer');
+
+// DB Connection 
+mongoose.connect(process.env.DB);
+const db = mongoose.connection;
 
 
 const app = express()
@@ -21,6 +28,12 @@ app.get("/",(req,res)=>{
     res.send("This is root route")    
 })
 
+//Schema 
+// Define a schema for storing file keys
+const fileSchema = new Schema({
+  key: String
+});
+const FileModel = mongoose.model('files', fileSchema);
 
 // Configure AWS SDK
 const s3 = new AWS.S3({
@@ -35,7 +48,7 @@ const upload = multer({ storage: storage });
 
 
 
-app.post("/file-upload",upload.single('file'),(req,res)=>{
+app.post("/file-upload",upload.single('file'),async (req,res)=>{
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
     }
@@ -46,33 +59,40 @@ app.post("/file-upload",upload.single('file'),(req,res)=>{
         ContentType: req.file.mimetype,
     }
     
-    s3.upload(params, (error, data) => {
-        if (error) { 
-          console.error(error);
-          return res.status(500).send('Failed to upload file to S3.');
-        }
-        res.send(`File uploaded successfully. S3 URL: ${data.Location}`);
-      });;
+    try {
+      await s3.upload(params).promise();
+      const file = new FileModel({ key: params.Key });
+      await file.save();
+      res.send(`File uploaded successfully.`);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Failed to upload file to S3.');
+    }
 })
 
-app.get("/download/:id",upload.single('file'),(req,res)=>{
+app.get("/download/:id",upload.single('file'),async (req,res)=>{
     const key = req.params.id;
-    const params = {
-        Bucket: process.env.S3_BUCKET_NAME,
-        Key: key
-    };
-    s3.getObject(params, (error, data) => {
-      if (error) {
-        console.error(error);
-        return res.status(500).send('Failed to download file from S3.');
-      }
+    try {
 
-      // Set headers for the downloadable file
+      const file = await FileModel.findOne({ _id : key });
+      if (!file) {
+        return res.status(404).send('File not found.');
+      }
+      // Retrieve the file from S3
+      const params = {
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: file.key
+      };
+  
+      const data = await s3.getObject(params).promise();
+  
       res.setHeader('Content-Disposition', `attachment; filename="${key}"`);
       res.setHeader('Content-Type', data.ContentType);
-
-      // Send the file data as the response
+  
       res.send(data.Body);
-    });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Failed to download file.');
+    }
 })
 
