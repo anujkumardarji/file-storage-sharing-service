@@ -3,9 +3,8 @@ import React from 'react';
 const UploadButton = ({ onFileSelect,isFileUploaded }) => {
   console.log("isFileUploaded",isFileUploaded)
   const handleFileSelect = (e) => {
-    const file = e.target.files[0]; // Get the first selected file
-    if (file) {
-      onFileSelect(file); // Pass the selected file to the parent component
+    if (e) {
+      onFileSelect(e); // Pass the selected file to the parent component
     }
   };
 

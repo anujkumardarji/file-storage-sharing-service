@@ -2,6 +2,7 @@ const express = require("express")
 const bodyParser = require('body-parser')
 const AWS = require("aws-sdk")
 const path = require('path');
+const cors = require('cors');
 require('dotenv').config();
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
@@ -18,7 +19,7 @@ const app = express()
 const PORT = 4100
 
 app.use(bodyParser.json())
-
+app.use(cors())
 
 app.listen(PORT,()=>{
     console.log("Server is running")
@@ -63,7 +64,7 @@ app.post("/file-upload",upload.single('file'),async (req,res)=>{
       await s3.upload(params).promise();
       const file = new FileModel({ key: params.Key });
       await file.save();
-      res.send(`File uploaded successfully.`);
+      res.send({ success : true, message : `File uploaded successfully.`, key : params.Key});
     } catch (error) {
       console.error(error);
       res.status(500).send('Failed to upload file to S3.');
