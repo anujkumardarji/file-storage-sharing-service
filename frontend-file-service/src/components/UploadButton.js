@@ -26,6 +26,17 @@ const UploadButton = ({ onFileSelect,isFileUploaded }) => {
     }
   };
 
+  const copyLink = () => {
+    const link = `http://localhost:3000/${isFileUploaded}`;
+    navigator.clipboard.writeText(link)
+        .then(() => {
+            console.log('Link copied to clipboard');
+            alert('Link copied to clipboard');
+        })
+        .catch((error) => {
+            console.error('Failed to copy link:', error);
+        });
+};
   return (
     <>
     {!isFileUploaded && 
@@ -47,16 +58,19 @@ const UploadButton = ({ onFileSelect,isFileUploaded }) => {
       </div>
     </div>
     }
-       {isFileUploaded && 
-       <div className="flex justify-center items-center min-h-screen">
-      <div className="rounded-lg p-8 text-center">
-        <p className="text-white text-lg font-semibold mb-4">Click below to download your file.</p>
-        <button className="bg-black text-white py-2 px-4 rounded" onClick = {downloadFile}>
-            Download File
-          </button>
-      </div>
-    </div>
-    }
+      {isFileUploaded && (
+                <div className="flex justify-center items-center min-h-screen">
+                    <div className="rounded-lg p-8 text-center">
+                        <p className="text-white text-lg font-semibold mb-4">Your file is ready.</p>
+                        <button className="bg-black text-white py-2 px-4 rounded mr-2" onClick={downloadFile}>
+                            Download File
+                        </button>
+                        <button className="bg-black text-white py-2 px-4 rounded" onClick={copyLink}>
+                            Copy Link
+                        </button>
+                    </div>
+                </div>
+            )}
     </>
   );
 };

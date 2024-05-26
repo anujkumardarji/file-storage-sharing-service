@@ -75,7 +75,7 @@ app.get("/download/:id",upload.single('file'),async (req,res)=>{
     const key = req.params.id;
     try {
 
-      const file = await FileModel.findOne({ _id : key });
+      const file = await FileModel.findOne({ key : key });
       if (!file) {
         return res.status(404).send('File not found.');
       }

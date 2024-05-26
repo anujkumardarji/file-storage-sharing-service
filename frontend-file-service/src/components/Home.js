@@ -12,31 +12,36 @@ function Home() {
   const [isFileUploaded, setIsFileUploaded] = useState(id ? id : false);
 
   const handleFileSelect = async (event) => {
-    // Handle the selected file (e.g., upload to server, process, etc.)
-    const file = event.target.files[0];
-
-      const formData = new FormData();
-      formData.append('file', file);
-      try {
-        const response = await axios.post('http://localhost:4100/file-upload', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        });
-        if(response && response.key){
-          setIsFileUploaded(response.key);
-        } else {
-          alert("Something went wrong!")
-        }
-    } catch (error) {
-        console.error('Error uploading file:', error);
+    if(event){
+      // Handle the selected file (e.g., upload to server, process, etc.)
+      const file = event.target.files[0];
+  
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+          const response = await axios.post('http://localhost:4100/file-upload', formData, {
+              headers: {
+                  'Content-Type': 'multipart/form-data'
+              }
+          });
+          console.log(response)
+          if(response && response.data && response.data.key){
+            setIsFileUploaded(response.data.key);
+          } else {
+            alert("Something went wrong!")
+          }
+      } catch (error) {
+          console.error('Error uploading file:', error);
+      }
+    } else {
+      setIsFileUploaded(null)
     }
   };
 
   return (
    <>
       <div className="bg-gray-500 min-h-screen"> 
-        <Navbar/>
+        <Navbar onFileSelect={handleFileSelect}/>
         <UploadButton onFileSelect={handleFileSelect} isFileUploaded={isFileUploaded}/>
       </div>
    </>

@@ -1,13 +1,22 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 
-const Navbar = () => {
+const Navbar = ({ onFileSelect,isFileUploaded }) => {
+   const navigate = useNavigate();  //  useNavigate hook
+
+   const redirectToHome = () => {
+      navigate(`/`);
+      onFileSelect(null)
+
+   }
+
     return  (
     <>
      <nav className="bg-gray-800 shadow-lg">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Navbar Brand */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 cursor-pointer" onClick={redirectToHome}>
             <span className="text-white text-lg font-semibold">Pocket Storage</span>
           </div>
 
