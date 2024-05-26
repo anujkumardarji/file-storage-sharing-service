@@ -3,19 +3,18 @@ import './../index.css'; // Import your CSS file
 import Navbar from './Navbar';
 import UploadButton from './UploadButton';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
+
 
 function Home() {
-
-  const [isFileUploaded, setIsFileUploaded] = useState(false);
-
+  const { id } = useParams();
+ 
+  const [isFileUploaded, setIsFileUploaded] = useState(id ? id : false);
 
   const handleFileSelect = async (event) => {
     // Handle the selected file (e.g., upload to server, process, etc.)
     const file = event.target.files[0];
-    console.log('Selected file:', file);
 
-      // After the "upload" process, set the file uploaded state to true
-      setIsFileUploaded(true);
       const formData = new FormData();
       formData.append('file', file);
       try {
@@ -24,12 +23,15 @@ function Home() {
                 'Content-Type': 'multipart/form-data'
             }
         });
-        setIsFileUploaded(true);
+        if(response && response.key){
+          setIsFileUploaded(response.key);
+        } else {
+          alert("Something went wrong!")
+        }
     } catch (error) {
         console.error('Error uploading file:', error);
     }
   };
-
 
   return (
    <>
