@@ -2,6 +2,7 @@ const express = require("express")
 const bodyParser = require('body-parser')
 const AWS = require("aws-sdk")
 const path = require('path');
+const cors = require('cors');
 require('dotenv').config();
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
@@ -18,7 +19,7 @@ const app = express()
 const PORT = 4100
 
 app.use(bodyParser.json())
-
+app.use(cors())
 
 app.listen(PORT,()=>{
     console.log("Server is running")
